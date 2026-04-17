@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Notifications{% endblock %}
+
+{% block content %}
+<h2>Manage Notifications</h2>
+<a href="{% url 'add_notification' %}" class="btn btn-success mb-3">Add Notification</a>
+{% for notification in notifications %}
+<div class="card mb-3">
+    <div class="card-header">{{ notification.title }}</div>
+    <div class="card-body">
+        <p>{{ notification.content }}</p>
+        <small>Posted by {{ notification.posted_by.username }} on {{ notification.created_at }}</small>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

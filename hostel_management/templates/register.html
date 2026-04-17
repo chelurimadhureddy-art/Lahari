@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Registration{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="card auth-card auth-card-wide">
+        <div class="card-header">
+            <h2 class="auth-title">Create Student Account</h2>
+            <p class="auth-subtitle">This page creates only student accounts for hostel services.</p>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info mb-4">
+                <strong>Note:</strong> Warden and admin accounts are not created here. Staff users should go to <a href="{% url 'login' %}">login</a> and use their staff credentials.
+            </div>
+            <form method="post" class="row g-3">
+                {% csrf_token %}
+                <div class="col-md-6">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" name="username" class="form-control" value="{{ request.POST.username }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="first_name" class="form-label">First Name</label>
+                    <input type="text" id="first_name" name="first_name" class="form-control" value="{{ request.POST.first_name }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="last_name" class="form-label">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" class="form-control" value="{{ request.POST.last_name }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" value="{{ request.POST.email }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="student_id" class="form-label">Student ID</label>
+                    <input type="text" id="student_id" name="student_id" class="form-control" value="{{ request.POST.student_id }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" id="phone" name="phone" class="form-control" value="{{ request.POST.phone }}" required>
+                </div>
+                <div class="col-12">
+                    <label for="address" class="form-label">Address</label>
+                    <textarea id="address" name="address" class="form-control" required>{{ request.POST.address }}</textarea>
+                </div>
+                <div class="col-12 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                    <p class="mb-0 text-muted">Already have an account or staff login? <a href="{% url 'login' %}">Go to login</a>.</p>
+                    <button type="submit" class="btn btn-primary btn-lg px-4">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

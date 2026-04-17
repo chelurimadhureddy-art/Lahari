@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Notification{% endblock %}
+
+{% block content %}
+<h2>Add Notification</h2>
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label>Title</label>
+        <input type="text" name="title" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Content</label>
+        <textarea name="content" class="form-control" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Post</button>
+</form>
+{% endblock %}

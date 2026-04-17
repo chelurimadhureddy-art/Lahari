@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Update Leave Status{% endblock %}
+
+{% block content %}
+<h2>Update Leave Status</h2>
+<p><strong>Student:</strong> {{ leave.student.username }}</p>
+<p><strong>From:</strong> {{ leave.from_date }}</p>
+<p><strong>To:</strong> {{ leave.to_date }}</p>
+<p><strong>Reason:</strong> {{ leave.reason }}</p>
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label>Status</label>
+        <select name="status" class="form-control">
+            <option value="pending" {% if leave.status == 'pending' %}selected{% endif %}>Pending</option>
+            <option value="approved" {% if leave.status == 'approved' %}selected{% endif %}>Approved</option>
+            <option value="rejected" {% if leave.status == 'rejected' %}selected{% endif %}>Rejected</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+{% endblock %}

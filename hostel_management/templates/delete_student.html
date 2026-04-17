@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Student{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="card auth-card">
+        <div class="card-header">
+            <h2 class="auth-title">Delete Student</h2>
+            <p class="auth-subtitle">This will remove the student account and profile data from the system.</p>
+        </div>
+        <div class="card-body">
+            <p><strong>Username:</strong> {{ student_obj.username }}</p>
+            <p><strong>Student ID:</strong> {{ profile.student_id }}</p>
+            <p><strong>Name:</strong> {{ student_obj.first_name }} {{ student_obj.last_name }}</p>
+            <form method="post" class="d-flex justify-content-end gap-2 mt-4">
+                {% csrf_token %}
+                <a href="{% url 'admin_students' %}" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn btn-danger">Delete Student</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

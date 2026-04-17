@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Submit Leave Request{% endblock %}
+
+{% block content %}
+<h2>Submit Leave Request</h2>
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label>From Date</label>
+        <input type="date" name="from_date" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>To Date</label>
+        <input type="date" name="to_date" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Reason</label>
+        <textarea name="reason" class="form-control" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}

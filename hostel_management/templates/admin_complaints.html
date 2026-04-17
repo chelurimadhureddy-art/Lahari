@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Complaints{% endblock %}
+
+{% block content %}
+<h2>Manage Complaints</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Student</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for complaint in complaints %}
+        <tr>
+            <td>{{ complaint.student.username }}</td>
+            <td>{{ complaint.title }}</td>
+            <td>{{ complaint.status }}</td>
+            <td>{{ complaint.created_at }}</td>
+            <td>
+                <a href="{% url 'update_complaint_status' complaint.id %}" class="btn btn-sm btn-warning">Update</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

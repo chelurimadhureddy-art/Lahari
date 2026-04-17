@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Room{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="card auth-card">
+        <div class="card-header">
+            <h2 class="auth-title">Add Room</h2>
+            <p class="auth-subtitle">Create a new hostel room and set its total capacity.</p>
+        </div>
+        <div class="card-body">
+            <form method="post" class="d-grid gap-3">
+                {% csrf_token %}
+                <div>
+                    <label for="room_number" class="form-label">Room Number</label>
+                    <input type="text" id="room_number" name="room_number" class="form-control" value="{{ request.POST.room_number }}" required>
+                </div>
+                <div>
+                    <label for="capacity" class="form-label">Capacity</label>
+                    <input type="number" id="capacity" name="capacity" min="1" class="form-control" value="{{ request.POST.capacity }}" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg">Add Room</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

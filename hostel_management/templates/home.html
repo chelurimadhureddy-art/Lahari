@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Hostel Management{% endblock %}
+
+{% block extra_head %}
+<style>
+    .home-shell {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .home-hero {
+        background: linear-gradient(135deg, #0f172a 0%, #2563eb 52%, #22c55e 100%);
+        border-radius: 1.75rem;
+        padding: 2.5rem;
+        color: #fff;
+        box-shadow: 0 20px 55px rgba(37, 99, 235, 0.2);
+    }
+
+    .home-hero h1 {
+        margin: 0;
+        font-size: clamp(2.2rem, 4vw, 3.5rem);
+        font-weight: 800;
+    }
+
+    .home-hero p {
+        margin: 1rem 0 0;
+        max-width: 700px;
+        color: rgba(255, 255, 255, 0.86);
+        font-size: 1.05rem;
+    }
+
+    .role-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1rem;
+    }
+
+    .role-card {
+        background: #fff;
+        border-radius: 1.4rem;
+        padding: 1.4rem;
+        box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+        display: grid;
+        gap: 1rem;
+    }
+
+    .role-card h3 {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    .role-card p,
+    .role-card li {
+        color: #64748b;
+    }
+
+    .role-card ul {
+        margin: 0;
+        padding-left: 1rem;
+    }
+
+    .role-card code {
+        color: #1d4ed8;
+    }
+
+    .role-card .btn {
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="home-shell">
+    <div class="home-hero">
+        <h1>Hostel Management Portal</h1>
+        <p>Choose your entry point below. Students can register and log in, while wardens and admins can use their staff credentials to access management dashboards.</p>
+    </div>
+
+    <div class="role-grid">
+        <div class="role-card">
+            <h3>Student</h3>
+            <p>Register a hostel account, view room details, submit complaints, request leave, and read notifications.</p>
+            <a href="{% url 'register' %}" class="btn btn-primary">Student Registration</a>
+            <a href="{% url 'login' %}" class="btn btn-outline-primary">Student Login</a>
+        </div>
+
+        <div class="role-card">
+            <h3>Warden</h3>
+            <p>Use staff credentials to manage students, rooms, complaints, leave requests, and hostel announcements.</p>
+            <ul>
+                <li>Staff credentials are created by the system administrator.</li>
+                <li>Login will redirect wardens to the correct dashboard automatically.</li>
+            </ul>
+            <a href="{% url 'staff_login' %}" class="btn btn-success">Warden Login</a>
+            <a href="{% url 'warden_dashboard' %}" class="btn btn-outline-success">Warden Dashboard</a>
+        </div>
+
+        <div class="role-card">
+            <h3>Admin</h3>
+            <p>Use an admin account to oversee hostel operations and access the full administrative dashboard.</p>
+            <ul>
+                <li>Admin users log in from the same staff login page.</li>
+                <li>No faculty role is configured yet.</li>
+            </ul>
+            <a href="{% url 'staff_login' %}" class="btn btn-dark">Admin Login</a>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-dark">Admin Dashboard</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

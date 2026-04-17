@@ -1,0 +1,326 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block extra_head %}
+<style>
+    .student-dashboard {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .dashboard-hero {
+        background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 55%, #38bdf8 100%);
+        border-radius: 1.5rem;
+        padding: 2rem;
+        color: #fff;
+        box-shadow: 0 18px 50px rgba(29, 78, 216, 0.22);
+    }
+
+    .dashboard-hero h1 {
+        margin: 0;
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 800;
+    }
+
+    .dashboard-hero p {
+        margin: 0.75rem 0 0;
+        max-width: 620px;
+        color: rgba(255, 255, 255, 0.84);
+    }
+
+    .hero-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1.25rem;
+    }
+
+    .hero-badge {
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 999px;
+        padding: 0.6rem 1rem;
+        font-weight: 600;
+    }
+
+    .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+    }
+
+    .metric-card {
+        background: #fff;
+        border-radius: 1.25rem;
+        padding: 1.25rem;
+        box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    .metric-label {
+        color: #64748b;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .metric-value {
+        margin-top: 0.5rem;
+        font-size: 2rem;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1;
+    }
+
+    .student-dashboard-main {
+        display: grid;
+        grid-template-columns: minmax(0, 1.75fr) minmax(280px, 1fr);
+        gap: 1.5rem;
+        align-items: start;
+    }
+
+    .dashboard-stack {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .profile-list,
+    .activity-list,
+    .notice-list {
+        display: grid;
+        gap: 0.9rem;
+    }
+
+    .profile-item,
+    .activity-item,
+    .notice-item {
+        padding: 1rem 1.05rem;
+        border-radius: 1rem;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+    }
+
+    .profile-item strong,
+    .activity-title,
+    .notice-title {
+        display: block;
+        color: #0f172a;
+    }
+
+    .activity-meta,
+    .notice-meta {
+        margin-top: 0.3rem;
+        color: #64748b;
+        font-size: 0.92rem;
+    }
+
+    .action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 0.9rem;
+    }
+
+    .action-tile {
+        display: block;
+        padding: 1rem;
+        border-radius: 1rem;
+        text-decoration: none;
+        color: #0f172a;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        border: 1px solid #dbeafe;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    .action-tile strong {
+        display: block;
+        margin-bottom: 0.35rem;
+    }
+
+    .action-tile span {
+        color: #64748b;
+        font-size: 0.92rem;
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.3rem 0.7rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    .status-pill.pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-pill.resolved,
+    .status-pill.approved {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-pill.rejected {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    @media (max-width: 991px) {
+        .student-dashboard-main {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="student-dashboard">
+    <div class="dashboard-hero">
+        <h1>Welcome back, {{ user.first_name|default:user.username }}</h1>
+        <p>Track your room assignment, manage complaints and leave requests, and stay up to date with hostel notices from one place.</p>
+        <div class="hero-badges">
+            <span class="hero-badge">Student ID: {{ profile.student_id }}</span>
+            <span class="hero-badge">
+                Room:
+                {% if profile.room %}
+                    {{ profile.room.room_number }}
+                {% else %}
+                    Not assigned
+                {% endif %}
+            </span>
+        </div>
+    </div>
+
+    <div class="metric-grid">
+        <div class="metric-card">
+            <div class="metric-label">Total Complaints</div>
+            <div class="metric-value">{{ complaint_count }}</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Pending Complaints</div>
+            <div class="metric-value">{{ pending_complaint_count }}</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Leave Requests</div>
+            <div class="metric-value">{{ leave_count }}</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Campus Notices</div>
+            <div class="metric-value">{{ notification_count }}</div>
+        </div>
+    </div>
+
+    <div class="student-dashboard-main">
+        <div class="dashboard-stack">
+            <div class="card">
+                <div class="card-header">Quick Actions</div>
+                <div class="card-body">
+                    <div class="action-grid">
+                        <a href="{% url 'submit_complaint' %}" class="action-tile">
+                            <strong>Submit Complaint</strong>
+                            <span>Report hostel issues and track the response.</span>
+                        </a>
+                        <a href="{% url 'submit_leave' %}" class="action-tile">
+                            <strong>Request Leave</strong>
+                            <span>Send leave details for approval in a few steps.</span>
+                        </a>
+                        <a href="{% url 'student_notifications' %}" class="action-tile">
+                            <strong>View Notifications</strong>
+                            <span>Read the latest hostel announcements.</span>
+                        </a>
+                        <a href="{% url 'student_profile' %}" class="action-tile">
+                            <strong>Update Profile</strong>
+                            <span>Keep your contact and address details current.</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Recent Complaints</div>
+                <div class="card-body">
+                    <div class="activity-list">
+                        {% for complaint in complaints %}
+                            <div class="activity-item">
+                                <strong class="activity-title">{{ complaint.title }}</strong>
+                                <div class="activity-meta d-flex flex-wrap justify-content-between gap-2 align-items-center">
+                                    <span>{{ complaint.created_at|date:"M d, Y h:i A" }}</span>
+                                    <span class="status-pill {{ complaint.status }}">{{ complaint.status }}</span>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="activity-item text-muted">No complaints submitted yet.</div>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'student_complaints' %}" class="btn btn-outline-primary mt-3">View All Complaints</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Recent Leave Requests</div>
+                <div class="card-body">
+                    <div class="activity-list">
+                        {% for leave in leaves %}
+                            <div class="activity-item">
+                                <strong class="activity-title">{{ leave.from_date|date:"M d, Y" }} to {{ leave.to_date|date:"M d, Y" }}</strong>
+                                <div class="activity-meta d-flex flex-wrap justify-content-between gap-2 align-items-center">
+                                    <span>{{ leave.reason|truncatechars:60 }}</span>
+                                    <span class="status-pill {{ leave.status }}">{{ leave.status }}</span>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="activity-item text-muted">No leave requests found.</div>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'student_leaves' %}" class="btn btn-outline-primary mt-3">View All Leave Requests</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-stack">
+            <div class="card">
+                <div class="card-header">Profile Snapshot</div>
+                <div class="card-body">
+                    <div class="profile-list">
+                        <div class="profile-item">
+                            <strong>Name</strong>
+                            <span>{{ user.first_name }} {{ user.last_name }}</span>
+                        </div>
+                        <div class="profile-item">
+                            <strong>Phone</strong>
+                            <span>{{ profile.phone|default:"Not updated yet" }}</span>
+                        </div>
+                        <div class="profile-item">
+                            <strong>Address</strong>
+                            <span>{{ profile.address|default:"Not updated yet" }}</span>
+                        </div>
+                        <div class="profile-item">
+                            <strong>Pending Leaves</strong>
+                            <span>{{ pending_leave_count }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Latest Notifications</div>
+                <div class="card-body">
+                    <div class="notice-list">
+                        {% for notification in notifications %}
+                            <div class="notice-item">
+                                <strong class="notice-title">{{ notification.title }}</strong>
+                                <div class="notice-meta">{{ notification.content|truncatechars:120 }}</div>
+                                <div class="notice-meta">{{ notification.created_at|date:"M d, Y h:i A" }}</div>
+                            </div>
+                        {% empty %}
+                            <div class="notice-item text-muted">No notifications available right now.</div>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'student_notifications' %}" class="btn btn-outline-primary mt-3">Open Notifications</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

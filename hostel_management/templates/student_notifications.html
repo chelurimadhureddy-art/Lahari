@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<h2>Notifications</h2>
+{% for notification in notifications %}
+<div class="card mb-3">
+    <div class="card-header">{{ notification.title }}</div>
+    <div class="card-body">
+        <p>{{ notification.content }}</p>
+        <small>{{ notification.created_at }}</small>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}My Complaints{% endblock %}
+
+{% block content %}
+<h2>My Complaints</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for complaint in complaints %}
+        <tr>
+            <td>{{ complaint.title }}</td>
+            <td>{{ complaint.status }}</td>
+            <td>{{ complaint.created_at }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'submit_complaint' %}" class="btn btn-primary">Submit New</a>
+{% endblock %}

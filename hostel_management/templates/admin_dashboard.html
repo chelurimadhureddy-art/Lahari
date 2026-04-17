@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ dashboard_role }} Dashboard{% endblock %}
+
+{% block extra_head %}
+<style>
+    .management-dashboard {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .management-hero {
+        background: linear-gradient(135deg, #1e293b 0%, #0f766e 48%, #22c55e 100%);
+        border-radius: 1.5rem;
+        padding: 2rem;
+        color: #fff;
+        box-shadow: 0 18px 50px rgba(15, 118, 110, 0.2);
+    }
+
+    .management-hero h1 {
+        margin: 0;
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 800;
+    }
+
+    .management-hero p {
+        margin: 0.75rem 0 0;
+        max-width: 680px;
+        color: rgba(255, 255, 255, 0.86);
+    }
+
+    .management-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1.25rem;
+    }
+
+    .management-badge {
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 999px;
+        padding: 0.6rem 1rem;
+        font-weight: 600;
+    }
+
+    .management-metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+    }
+
+    .management-metric {
+        background: #fff;
+        border-radius: 1.25rem;
+        padding: 1.25rem;
+        box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    .management-metric-label {
+        color: #64748b;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .management-metric-value {
+        margin-top: 0.55rem;
+        font-size: 2rem;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1;
+    }
+
+    .management-main {
+        display: grid;
+        grid-template-columns: minmax(0, 1.8fr) minmax(280px, 1fr);
+        gap: 1.5rem;
+        align-items: start;
+    }
+
+    .management-stack {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .management-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 0.9rem;
+    }
+
+    .management-tile {
+        display: block;
+        padding: 1rem;
+        border-radius: 1rem;
+        text-decoration: none;
+        color: #0f172a;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        border: 1px solid #d1fae5;
+    }
+
+    .management-tile strong {
+        display: block;
+        margin-bottom: 0.35rem;
+    }
+
+    .management-tile span,
+    .dashboard-note {
+        color: #64748b;
+        font-size: 0.92rem;
+    }
+
+    .dashboard-list {
+        display: grid;
+        gap: 0.9rem;
+    }
+
+    .dashboard-list-item {
+        padding: 1rem 1.05rem;
+        border-radius: 1rem;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+    }
+
+    .dashboard-list-item strong {
+        display: block;
+        color: #0f172a;
+    }
+
+    .dashboard-list-meta {
+        margin-top: 0.3rem;
+        color: #64748b;
+        font-size: 0.92rem;
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.3rem 0.7rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    .status-pill.pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    @media (max-width: 991px) {
+        .management-main {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="management-dashboard">
+    <div class="management-hero">
+        <h1>{{ dashboard_role }} Dashboard</h1>
+        <p>Manage student records, room assignments, complaints, leave approvals, and announcements from one control center.</p>
+        <div class="management-badges">
+            <span class="management-badge">Students: {{ student_count }}</span>
+            <span class="management-badge">Assigned: {{ assigned_students }}</span>
+            <span class="management-badge">Unassigned: {{ unassigned_students }}</span>
+            <span class="management-badge">Open Rooms: {{ open_room_count }}</span>
+        </div>
+    </div>
+
+    <div class="management-metrics">
+        <div class="management-metric">
+            <div class="management-metric-label">Total Students</div>
+            <div class="management-metric-value">{{ student_count }}</div>
+        </div>
+        <div class="management-metric">
+            <div class="management-metric-label">Pending Complaints</div>
+            <div class="management-metric-value">{{ pending_complaint_count }}</div>
+        </div>
+        <div class="management-metric">
+            <div class="management-metric-label">Pending Leaves</div>
+            <div class="management-metric-value">{{ pending_leave_count }}</div>
+        </div>
+        <div class="management-metric">
+            <div class="management-metric-label">Rooms Managed</div>
+            <div class="management-metric-value">{{ room_count }}</div>
+        </div>
+    </div>
+
+    <div class="management-main">
+        <div class="management-stack">
+            <div class="card">
+                <div class="card-header">Management Actions</div>
+                <div class="card-body">
+                    <div class="management-actions">
+                        <a href="{% url 'admin_students' %}" class="management-tile">
+                            <strong>Manage Students</strong>
+                            <span>Add, edit, delete, and review student details.</span>
+                        </a>
+                        <a href="{% url 'admin_rooms' %}" class="management-tile">
+                            <strong>Manage Rooms</strong>
+                            <span>Track capacity and room availability in one place.</span>
+                        </a>
+                        <a href="{% url 'admin_complaints' %}" class="management-tile">
+                            <strong>Review Complaints</strong>
+                            <span>Resolve hostel issues and update complaint status.</span>
+                        </a>
+                        <a href="{% url 'admin_leaves' %}" class="management-tile">
+                            <strong>Process Leaves</strong>
+                            <span>Approve or reject student leave requests quickly.</span>
+                        </a>
+                        <a href="{% url 'admin_notifications' %}" class="management-tile">
+                            <strong>Announcements</strong>
+                            <span>See recent notices and post new announcements.</span>
+                        </a>
+                        <a href="{% url 'add_notification' %}" class="management-tile">
+                            <strong>Post Notification</strong>
+                            <span>Publish hostel updates for all students.</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Pending Complaints</div>
+                <div class="card-body">
+                    <div class="dashboard-list">
+                        {% for complaint in complaints|slice:":5" %}
+                            <div class="dashboard-list-item">
+                                <strong>{{ complaint.title }}</strong>
+                                <div class="dashboard-list-meta d-flex justify-content-between gap-2 flex-wrap align-items-center">
+                                    <span>{{ complaint.student.username }} • {{ complaint.created_at|date:"M d, Y h:i A" }}</span>
+                                    <span class="status-pill pending">{{ complaint.status }}</span>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="dashboard-list-item dashboard-note">No pending complaints right now.</div>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'admin_complaints' %}" class="btn btn-outline-primary mt-3">Open Complaint Queue</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Pending Leave Requests</div>
+                <div class="card-body">
+                    <div class="dashboard-list">
+                        {% for leave in leaves|slice:":5" %}
+                            <div class="dashboard-list-item">
+                                <strong>{{ leave.student.username }}</strong>
+                                <div class="dashboard-list-meta d-flex justify-content-between gap-2 flex-wrap align-items-center">
+                                    <span>{{ leave.from_date|date:"M d, Y" }} to {{ leave.to_date|date:"M d, Y" }}</span>
+                                    <span class="status-pill pending">{{ leave.status }}</span>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="dashboard-list-item dashboard-note">No leave approvals are waiting right now.</div>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'admin_leaves' %}" class="btn btn-outline-primary mt-3">Open Leave Requests</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="management-stack">
+            <div class="card">
+                <div class="card-header">Operations Snapshot</div>
+                <div class="card-body">
+                    <div class="dashboard-list">
+                        <div class="dashboard-list-item">
+                            <strong>Students with Rooms</strong>
+                            <div class="dashboard-list-meta">{{ assigned_students }} assigned</div>
+                        </div>
+                        <div class="dashboard-list-item">
+                            <strong>Students Awaiting Rooms</strong>
+                            <div class="dashboard-list-meta">{{ unassigned_students }} unassigned</div>
+                        </div>
+                        <div class="dashboard-list-item">
+                            <strong>Rooms Available</strong>
+                            <div class="dashboard-list-meta">{{ open_room_count }} room(s) still have slots</div>
+                        </div>
+                        <div class="dashboard-list-item">
+                            <strong>Latest Role</strong>
+                            <div class="dashboard-list-meta">{{ dashboard_role }} access is active for this account.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Recent Announcements</div>
+                <div class="card-body">
+                    <div class="dashboard-list">
+                        {% for notification in notifications %}
+                            <div class="dashboard-list-item">
+                                <strong>{{ notification.title }}</strong>
+                                <div class="dashboard-list-meta">{{ notification.content|truncatechars:110 }}</div>
+                                <div class="dashboard-list-meta">{{ notification.created_at|date:"M d, Y h:i A" }}</div>
+                            </div>
+                        {% empty %}
+                            <div class="dashboard-list-item dashboard-note">No announcements have been posted yet.</div>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'admin_notifications' %}" class="btn btn-outline-primary mt-3">View All Announcements</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
